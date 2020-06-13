@@ -1,0 +1,84 @@
+<!--
+You are free to copy and use this sample in accordance with the terms of the
+Apache license (http://www.apache.org/licenses/LICENSE-2.0.html)
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>gEVS Using Google Spreadsheet and Visualization API as a voting system wrapper</title>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript"> 
+      google.load('visualization', '1', {packages: ['corechart']});
+    </script>
+    <script type="text/javascript"> 
+	// To see the data that this visualization uses, browse to
+    // https://spreadsheets.google.com/ccc?key=tQW2XyL0iNBeq8m6zrFuMRw 
+	var ssKey = "tQW2XyL0iNBeq8m6zrFuMRw";
+	var visualization;
+	
+	// drawDynamicSelect() and handleSelectResponse() are used to draw the dynamic list of question ids
+	function drawDynamicSelect(){
+		var query = new google.visualization.Query(
+          'http://spreadsheets.google.com/tq?key='+ssKey+'&pub=1');
+		   query.setQuery("SELECT B, Count(C) GROUP BY B ");
+		   query.send(handleSelectResponse);
+	}
+	function handleSelectResponse(response) {
+		if (response.isError()) {
+        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;
+      }
+    
+      var data = response.getDataTable();
+	  var ansSet=document.myform.ansSet
+	  for (i=0; i<data.getNumberOfRows(); i++){
+		var ansText = data.getValue(i, 0)+' (No of votes '+data.getValue(i, 1)+')';
+		var valText = data.getValue(i, 0);
+		ansSet.options[ansSet.options.length]=new Option(ansText,valText);
+      }  
+	}
+ 	//drawVisualization() and handleQueryResponse() draw a chart for the selected data
+    function drawVisualization(ansSet) {  
+      var query = new google.visualization.Query(
+          'http://spreadsheets.google.com/tq?key='+ssKey+'&pub=1');
+      
+      // Apply query language.
+      query.setQuery("SELECT C, Count(B) WHERE B = '"+ansSet+"' GROUP BY C ");
+      
+      // Send the query with a callback function.
+      query.send(handleQueryResponse);
+    }
+    
+    function handleQueryResponse(response) {
+      if (response.isError()) {
+        alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+        return;
+      }
+      
+      var data = response.getDataTable();
+      console.log(data);
+      
+      visualization = new google.visualization.BarChart(document.getElementById('visualization'));
+      visualization.draw(data,
+           {title:"Response Graph for "+document.myform.ansSet.value,
+            width:600, height:400,
+			legend:'none',
+            vAxis: {title: "Answer Options"},
+            hAxis: {title: "Responses"}}
+      );
+    }
+    </script>
+    </head>
+    <body style="font-family: Arial;border: 0 none;" onload="drawDynamicSelect();">
+    <p>Data for this page is extracted from this <a href="https://spreadsheets.google.com/ccc?key=tQW2XyL0iNBeq8m6zrFuMRw">Google Spreadsheet</a>. Responses can be added via <a href="https://spreadsheets.google.com/viewform?hl=en_GB&amp;formkey=dFFXMlh5TDBpTkJlcThtNnpyRnVNUnc6MQ#gid=0">this form</a>.</p>
+	<form action="" name="myform">
+      <select name="ansSet" onChange="drawVisualization(this.value)">
+    	<option value="">-Select Answer Set-</option>
+      </select>
+    </form>
+<div id="visualization" style="height: 400px; width: 600px;"></div>
+<footer>Created by <a href="http://twitter.com/mhawksey">mhawksey</a> | <a href="http://www.rsc-ne-scotland.org.uk/mashe/2010/12/gevs-google-visualization/">Related blog post</a></footer>
+</body>
+</html>

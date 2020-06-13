@@ -3,7 +3,7 @@ var googleSheetUrl = "https://docs.google.com/spreadsheets/d/1sPDYudSaMCLrIzG96Q
 
 function clickButton() {
     var query = new google.visualization.Query(googleSheetUrl);
-    query.setQuery("SELECT B WHERE A CONTAINS '2'");
+    query.setQuery("SELECT * WHERE 'Department' CONTAINS 'COMP'");
     query.send(handleResponse);
 }
 
@@ -13,7 +13,7 @@ function handleResponse(response) {
         return;
     }
     var data = response.getDataTable();
-    console.log(data.getColumnId(0));
-    console.log(data.getColumnLabel(0));
-    console.log(data.getValue(0,0));
+    console.log(data);
+    
+    // $("#name").html(data.getValue(0,0));
 }

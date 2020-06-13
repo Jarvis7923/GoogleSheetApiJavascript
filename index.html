@@ -4,17 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
-
+    
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+    </script>
+    
     <!-- google js api -->
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript"> 
-      google.load('visualization', '1', {packages: ['corechart']});
+    <script type="text/javascript">
+        google.load('visualization', '1', {
+            packages: ['corechart']
+        });
     </script>
     <script src="scripts/googleQueryTest.js"></script>
 </head>
 <body>
-    <h1>Name</h1>
-    <p id="name">idk</p>
+    <h1 id="Course-Name">Name</h1>
+    <h4 id="Instructor-1">his name</h1>
+    <p id="Course General">100 pts</p>
     <button type="button" class="btn btn-primary" onclick="clickButton(this)">Change</button>
 
 </body>
